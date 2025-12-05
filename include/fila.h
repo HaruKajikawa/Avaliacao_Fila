@@ -29,4 +29,6 @@ bool enfileirar(Fila* F, Aluno x);
 bool desinfileirar(Fila* F, Aluno* removido);
 void destruirFila(Fila** F);
 void exibirFila(const Fila* F);
+bool existeMatriculaFila(const Fila* F, int matricula);
+bool existeCpfFila(const Fila* F, const char* cpf);
 #endif

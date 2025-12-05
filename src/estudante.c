@@ -29,10 +29,7 @@ bool duplicidadeCPF(const char* cpf)
 bool cadastrarEstudante(const Aluno* a)
 {
     if (totalAlunos >= MAX_CADASTRO) return false;
-
-    if (duplicidadeMatricula(a->matricula)) return false;
-
-    if (duplicidadeCPF(a->cpf)) return false;
+    if (duplicidadeMatricula(a->matricula) || duplicidadeCPF(a->cpf)) return false;
 
     banco[totalAlunos++] = *a;
     return true;
@@ -67,4 +64,21 @@ void listarEstudantes()
         printf("Nome: %s\n", banco[i].nome);
         printf("CPF: %s\n\n", banco[i].cpf);
     }
+}
+
+void limparBuffer()
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+bool alunoNaFila(const Fila* F, int matricula)
+{
+    int idx = F->inicio;
+    for (int i = 0; i < F->total; i++)
+    {
+        if (F->dados[idx].matricula == matricula) return true;
+        avanca(idx, F->capacidade);
+    }
+    return false;
 }

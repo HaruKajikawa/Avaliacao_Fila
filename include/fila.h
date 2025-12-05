@@ -27,7 +27,7 @@ typedef struct Fila
 Fila* criarFila(int capacidade);
 bool filaVazia(const Fila* F);
 bool filaCheia(const Fila* F);
-bool enfileirar(Fila* F, const Aluno* x);
+bool enfileirar(Fila* F, Aluno x);
 bool desenfileirar(Fila* F, Aluno* removido);
 void destruirFila(Fila** F);
 void exibirFila(const Fila* F);

@@ -2,13 +2,15 @@
 #define FILA_H
 
 #include <stdbool.h>
-#define MAX_ESTUDANTE 100
+
+#define MAX_NOME 61
+#define MAX_CPF 12
 
 typedef struct Aluno
 {
     int matricula;
-    char cpf[12];
-    char nome[61];
+    char cpf[MAX_CPF];
+    char nome[MAX_NOME];
 } Aluno;
 
 typedef struct Fila

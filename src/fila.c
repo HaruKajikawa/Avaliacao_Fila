@@ -36,18 +36,12 @@ bool filaCheia(const Fila* F)
     return F->total == F->capacidade;
 }
 
-bool enfileirar(Fila* F,const Aluno* x)
+bool enfileirar(Fila* F, Aluno x)
 {
-    if (!F || !x) return false;
     if (filaCheia(F)) return false;
 
-    F->dados[F->final].matricula = x->matricula;
-    strncpy(F->dados[F->final].cpf, x->cpf, MAX_CPF - 1);
-    F->dados[F->final].cpf[MAX_CPF - 1] = '\0';
-    strncpy(F->dados[F->final].nome, x->nome,  MAX_NOME - 1);
-    F->dados[F->final].nome[MAX_NOME - 1] = '\0';
-
-    avanca_idx(&F->final, F->capacidade);
+    F->dados[F->final] = x;
+    avanca(F->final, F->capacidade);
     F->total++;
 
     return true;
@@ -55,20 +49,10 @@ bool enfileirar(Fila* F,const Aluno* x)
 
 bool desenfileirar(Fila* F, Aluno* removido)
 {
-    if (!F || !removido) return false;
     if (filaVazia(F)) return false;
 
-    removido->matricula = F->dados[F->inicio].matricula;
-    strncpy(removido->cpf, F->dados[F->inicio].cpf, MAX_CPF);
-    removido->cpf[MAX_CPF - 1] = '\0';
-    strncpy(removido->nome, F->dados[F->inicio].nome, MAX_NOME);
-    removido->nome[MAX_NOME - 1] = '\0';
-
-    F->dados[F->inicio].matricula = 0;
-    F->dados[F->inicio].cpf[0] = '\0';
-    F->dados[F->inicio].nome[0] = '\0';
-
-    avanca_idx(&F->inicio, F->capacidade);
+    *removido = F->dados[F->inicio];
+    avanca(F->inicio, F->capacidade);
     F->total--;
 
     return true;

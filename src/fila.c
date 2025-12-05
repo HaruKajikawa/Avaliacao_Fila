@@ -6,9 +6,10 @@
 
 #define avanca(idx, capacidade) (idx = ((idx + 1) % capacidade))
 
-
 Fila* criarFila(int capacidade)
 {
+    if (capacidade <= 0) return NULL;
+
     Fila* F = (Fila*) malloc(sizeof(Fila));
     if (!F) return NULL;
 
@@ -87,7 +88,7 @@ void exibirFila(const Fila* F)
         printf("Posição %d: \n", i + 1);
         printf(" Matrícula: %d\n", A->matricula);
         printf(" CPF: %s\n", A->cpf);
-        printf(" Nome: %s\n", A->nome);
+        printf(" Nome: %s\n\n", A->nome);
 
         avanca(idx, F->capacidade);
     }

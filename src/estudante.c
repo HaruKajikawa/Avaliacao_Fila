@@ -62,6 +62,7 @@ void listarEstudantes()
         printf("Matrícula: %d\n", banco.dados[i].matricula);
         printf("Nome: %s\n", banco.dados[i].nome);
         printf("CPF: %s\n\n", banco.dados[i].cpf);
+        printf("Atendido: %s\n", banco.dados[i].atendido ? "Sim" : "Não");
         printf("------------------------------\n");
     }
 }

@@ -4,11 +4,6 @@
 #include <string.h>
 #include <stdio.h>
 
-static void avanca_idx(int* idx, int capacidade)
-{
-    *idx = (*idx + 1) % capacidade;
-}
-
 Fila* criarFila(int capacidade)
 {
     if (capacidade <= 0) return NULL;
@@ -58,7 +53,7 @@ bool enfileirar(Fila* F,const Aluno* x)
     return true;
 }
 
-bool desinfileirar(Fila* F, Aluno* removido)
+bool desenfileirar(Fila* F, Aluno* removido)
 {
     if (!F || !removido) return false;
     if (filaVazia(F)) return false;
@@ -91,12 +86,6 @@ void destruirFila(Fila** F)
 
 void exibirFila(const Fila* F)
 {
-    if (!F)
-    {
-        printf("\nFila inexistente\n");
-        return;
-    }
-
     if (filaVazia(F))
     {
         printf("\nFila vazia!\n");
@@ -111,37 +100,12 @@ void exibirFila(const Fila* F)
     {
         const Aluno* A = &F->dados[idx];
 
-        printf("Posição %d (índice%d): \n", i + 1, idx);
+        printf("Posição %d (índice %d): \n", i + 1, idx);
         printf(" Matrícula: %d\n", A->matricula);
         printf(" CPF: %s\n", A->cpf);
         printf(" Nome: %s\n\n", A->nome);
+        printf(" Atendido: %s\n\n", A->atendido ? "Sim" : "Não");
 
-        avanca_idx(&idx, F->capacidade);
+        avanca(idx, F->capacidade);
     }
-}
-
-bool existeMatriculaFila(const Fila* F, int matricula)
-{
-    if (!F || filaVazia(F)) return false;
-
-    int idx = F->inicio;
-    for (int i = 0; i < F->total; i++)
-    {
-        if (F->dados[idx].matricula == matricula) return true;
-        avanca_idx(&idx, F->capacidade);
-    }
-    return false;
-}
-
-bool existeCpfFila(const Fila* F, const char* cpf)
-{
-    if (!F || filaVazia(F) || !cpf) return false;
-
-    int idx = F->inicio;
-    for (int i = 0; i < F->total; i++)
-    {
-        if (strncmp(F->dados[idx].cpf, cpf, MAX_CPF) == 0) return true;
-        avanca_idx(&idx, F->capacidade);
-    }
-    return false;
 }

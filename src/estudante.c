@@ -1,47 +1,45 @@
 #include "estudante.h"
+#include "fila.h"
 
-#include <stdio.h>
 #include <string.h>
+#include <stdio.h>
 
-#define MAX_CADASTRO 100
-
-static Aluno banco[MAX_CADASTRO];
-static int totalAlunos = 0;
+static BancoEstudantes banco = {.total = 0};
 
 bool duplicidadeMatricula(int matricula)
 {
-    for (int i = 0; i < totalAlunos; i++)
+    for (int i = 0; i < banco.total; i++)
     {
-        if (banco[i].matricula == matricula) return true;
+        if (banco.dados[i].matricula == matricula) return true;
     }
     return false;
 }
 
 bool duplicidadeCPF(const char* cpf)
 {
-    for (int i = 0; i < totalAlunos; i++)
+    for (int i = 0; i < banco.total; i++)
     {
-        if (strcmp(banco[i].cpf, cpf) == 0) return true;
+        if (strcmp(banco.dados[i].cpf, cpf) == 0) return true;
     }
     return false;
 }
 
 bool cadastrarEstudante(const Aluno* a)
 {
-    if (totalAlunos >= MAX_CADASTRO) return false;
+    if (banco.total >= MAX_CADASTRO) return false;
     if (duplicidadeMatricula(a->matricula) || duplicidadeCPF(a->cpf)) return false;
 
-    banco[totalAlunos++] = *a;
+    banco.dados[banco.total++] = *a;
     return true;
 }
 
 bool buscarMatricula(int matricula, Aluno* resultado)
 {
-    for (int i = 0; i < totalAlunos; i++)
+    for (int i = 0; i < banco.total; i++)
     {
-        if (banco[i].matricula == matricula)
+        if (banco.dados[i].matricula == matricula)
         {
-            *resultado = banco[i];
+            *resultado = banco.dados[i];
             return true;
         }
     }
@@ -50,7 +48,7 @@ bool buscarMatricula(int matricula, Aluno* resultado)
 
 void listarEstudantes()
 {
-    if (totalAlunos == 0)
+    if (banco.total == 0)
     {
         printf("\nNenhum estudante cadastrado\n");
         return;
@@ -58,11 +56,13 @@ void listarEstudantes()
 
     printf("\n==== ESTUDANTES CADASTRADOS ====\n");
 
-    for (int i = 0; i < totalAlunos; i++)
+    for (int i = 0; i < banco.total; i++)
     {
-        printf("Matrícula: %d\n", banco[i].matricula);
-        printf("Nome: %s\n", banco[i].nome);
-        printf("CPF: %s\n\n", banco[i].cpf);
+        printf("------------------------------\n");
+        printf("Matrícula: %d\n", banco.dados[i].matricula);
+        printf("Nome: %s\n", banco.dados[i].nome);
+        printf("CPF: %s\n\n", banco.dados[i].cpf);
+        printf("------------------------------\n");
     }
 }
 
@@ -78,7 +78,7 @@ bool alunoNaFila(const Fila* F, int matricula)
     for (int i = 0; i < F->total; i++)
     {
         if (F->dados[idx].matricula == matricula) return true;
-        avanca(idx, F->capacidade);
+        idx = (idx + 1) % F->capacidade;
     }
     return false;
 }

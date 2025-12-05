@@ -4,13 +4,16 @@
 #include <string.h>
 #include <stdio.h>
 
-#define avanca(idx, capacidade) (idx = ((idx + 1) % capacidade))
+static void avanca_idx(int* idx, int capacidade)
+{
+    *idx = (*idx + 1) % capacidade;
+}
 
 Fila* criarFila(int capacidade)
 {
     if (capacidade <= 0) return NULL;
 
-    Fila* F = (Fila*) malloc(sizeof(Fila));
+    Fila* F = malloc(sizeof(Fila));
     if (!F) return NULL;
 
     F->capacidade = capacidade;
@@ -18,7 +21,7 @@ Fila* criarFila(int capacidade)
     F->inicio = 0;
     F->final = 0;
 
-    F->dados = calloc(capacidade, sizeof(Aluno));
+    F->dados = calloc((size_t)capacidade, sizeof(Aluno));
     if(!F->dados)
     {
         free(F);
@@ -38,12 +41,18 @@ bool filaCheia(const Fila* F)
     return F->total == F->capacidade;
 }
 
-bool enfileirar(Fila* F, Aluno x)
+bool enfileirar(Fila* F,const Aluno* x)
 {
+    if (!F || !x) return false;
     if (filaCheia(F)) return false;
 
-    F->dados[F->final] = x;
-    avanca(F->final, F->capacidade);
+    F->dados[F->final].matricula = x->matricula;
+    strncpy(F->dados[F->final].cpf, x->cpf, MAX_CPF - 1);
+    F->dados[F->final].cpf[MAX_CPF - 1] = '\0';
+    strncpy(F->dados[F->final].nome, x->nome,  MAX_NOME - 1);
+    F->dados[F->final].nome[MAX_NOME - 1] = '\0';
+
+    avanca_idx(&F->final, F->capacidade);
     F->total++;
 
     return true;
@@ -51,10 +60,20 @@ bool enfileirar(Fila* F, Aluno x)
 
 bool desinfileirar(Fila* F, Aluno* removido)
 {
+    if (!F || !removido) return false;
     if (filaVazia(F)) return false;
 
-    *removido = F->dados[F->inicio];
-    avanca(F->inicio, F->capacidade);
+    removido->matricula = F->dados[F->inicio].matricula;
+    strncpy(removido->cpf, F->dados[F->inicio].cpf, MAX_CPF);
+    removido->cpf[MAX_CPF - 1] = '\0';
+    strncpy(removido->nome, F->dados[F->inicio].nome, MAX_NOME);
+    removido->nome[MAX_NOME - 1] = '\0';
+
+    F->dados[F->inicio].matricula = 0;
+    F->dados[F->inicio].cpf[0] = '\0';
+    F->dados[F->inicio].nome[0] = '\0';
+
+    avanca_idx(&F->inicio, F->capacidade);
     F->total--;
 
     return true;
@@ -65,12 +84,19 @@ void destruirFila(Fila** F)
     if (!F || !*F) return;
 
     free((*F)->dados);
+    (*F)->dados = NULL;
     free(*F);
     *F = NULL;
 }
 
 void exibirFila(const Fila* F)
 {
+    if (!F)
+    {
+        printf("\nFila inexistente\n");
+        return;
+    }
+
     if (filaVazia(F))
     {
         printf("\nFila vazia!\n");
@@ -85,11 +111,37 @@ void exibirFila(const Fila* F)
     {
         const Aluno* A = &F->dados[idx];
 
-        printf("Posição %d: \n", i + 1);
+        printf("Posição %d (índice%d): \n", i + 1, idx);
         printf(" Matrícula: %d\n", A->matricula);
         printf(" CPF: %s\n", A->cpf);
         printf(" Nome: %s\n\n", A->nome);
 
-        avanca(idx, F->capacidade);
+        avanca_idx(&idx, F->capacidade);
     }
+}
+
+bool existeMatriculaFila(const Fila* F, int matricula)
+{
+    if (!F || filaVazia(F)) return false;
+
+    int idx = F->inicio;
+    for (int i = 0; i < F->total; i++)
+    {
+        if (F->dados[idx].matricula == matricula) return true;
+        avanca_idx(&idx, F->capacidade);
+    }
+    return false;
+}
+
+bool existeCpfFila(const Fila* F, const char* cpf)
+{
+    if (!F || filaVazia(F) || !cpf) return false;
+
+    int idx = F->inicio;
+    for (int i = 0; i < F->total; i++)
+    {
+        if (strncmp(F->dados[idx].cpf, cpf, MAX_CPF) == 0) return true;
+        avanca_idx(&idx, F->capacidade);
+    }
+    return false;
 }

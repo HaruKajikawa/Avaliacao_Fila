@@ -19,4 +19,6 @@ bool duplicidadeCPF(const char* cpf);
 void listarEstudantes();
 void limparBuffer();
 bool alunoNaFila(const Fila* F, int matricula);
+
+extern BancoEstudantes banco;
 #endif

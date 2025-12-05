@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-static BancoEstudantes banco = {.total = 0};
+BancoEstudantes banco = {.total = 0};
 
 bool duplicidadeMatricula(int matricula)
 {
@@ -29,7 +29,9 @@ bool cadastrarEstudante(const Aluno* a)
     if (banco.total >= MAX_CADASTRO) return false;
     if (duplicidadeMatricula(a->matricula) || duplicidadeCPF(a->cpf)) return false;
 
-    banco.dados[banco.total++] = *a;
+    banco.dados[banco.total] = *a;
+    banco.dados[banco.total].atendido = false;
+    banco.total++;
     return true;
 }
 
@@ -61,7 +63,7 @@ void listarEstudantes()
         printf("------------------------------\n");
         printf("Matrícula: %d\n", banco.dados[i].matricula);
         printf("Nome: %s\n", banco.dados[i].nome);
-        printf("CPF: %s\n\n", banco.dados[i].cpf);
+        printf("CPF: %s\n", banco.dados[i].cpf);
         printf("Atendido: %s\n", banco.dados[i].atendido ? "Sim" : "Não");
         printf("------------------------------\n");
     }

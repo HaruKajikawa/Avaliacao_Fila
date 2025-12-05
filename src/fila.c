@@ -87,7 +87,7 @@ void exibirFila(const Fila* F)
         printf("Posição %d (índice %d): \n", i + 1, idx);
         printf(" Matrícula: %d\n", A->matricula);
         printf(" CPF: %s\n", A->cpf);
-        printf(" Nome: %s\n\n", A->nome);
+        printf(" Nome: %s\n", A->nome);
         printf(" Atendido: %s\n\n", A->atendido ? "Sim" : "Não");
 
         avanca(idx, F->capacidade);
